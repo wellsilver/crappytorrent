@@ -35,8 +35,9 @@ struct searchpacket {
 
 } __attribute__((__packed__));
 
+int fd;
+
 void server() {
-  int fd;
   int opt = 1;
   int rslt;
 
