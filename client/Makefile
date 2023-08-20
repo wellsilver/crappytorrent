@@ -5,11 +5,14 @@ build:
 
 run: 
 ifeq ($(OS),Windows_NT)     # is Windows_NT on XP, 2000, 7, Vista, 10...
-	g++ main.cpp -l "ws2_32" -o main.o
+	g++ main.cpp -g -l "ws2_32" -o main.o
 else
-	g++ main.cpp -o main.o
+	g++ main.cpp -g -o main.o
 endif
 	./main.o
+
+test:
+	gdb --args main.o -p 5
 
 clean:
 	rm main.o
