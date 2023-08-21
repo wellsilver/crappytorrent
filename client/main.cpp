@@ -29,7 +29,7 @@ struct ackpacket {
 // a download packet type2
 struct downpacket {
   char type;
-  int sector;
+  uint64_t sector;
 
   char data[1000];
 } __attribute__((__packed__));
@@ -42,28 +42,44 @@ struct searchpacket {
   char data[1000];
 } __attribute__((__packed__));
 
-int fd;
+int dfd;
+int pfd;
 // thread th(server);
 void server() {
   int opt = 1;
+  struct sockaddr_in address;
   int rslt;
 
-  fd = socket(AF_INET, SOCK_DGRAM, 0);
+  pfd = socket(AF_INET, SOCK_DGRAM, 0);
+  
+  address.sin_family = AF_INET;
+  address.sin_addr.s_addr = INADDR_ANY;
+  address.sin_port = htons(peerport);
 
-  struct sockaddr_in address;
-    address.sin_family = AF_INET;
-    address.sin_addr.s_addr = INADDR_ANY;
-    address.sin_port = htons(peerport);
-
-  rslt = bind(fd, (struct sockaddr*)&address, sizeof(address));
+  rslt = bind(pfd, (struct sockaddr*)&address, sizeof(address));
 
   if (rslt == -1) {
-    printf("- server could not bind %i\n", errno);
-    close(fd);
+    printf("- could not bind %i\n", peerport);
+    close(pfd);
     return;
   }
 
-  close(fd);
+  dfd = socket(AF_INET, SOCK_DGRAM, 0);
+
+  address.sin_family = AF_INET;
+  address.sin_addr.s_addr = INADDR_ANY;
+  address.sin_port = htons(peerport);
+
+  rslt = bind(dfd, (struct sockaddr*)&address, sizeof(address));
+
+  if (rslt == -1) {
+    printf("- could not bind %i\n", downport);
+    close(dfd);
+    return;
+  }
+
+  close(dfd);
+  close(pfd);
 }
 
 int main(int argc, char **argv) {
@@ -95,14 +111,14 @@ int main(int argc, char **argv) {
       downport = atoi(argv[loop]);
       
       if (downport==0) {
-        printf("Bad argument for \"-pp\"");
+        printf("Bad argument for \"-dp\"");
         return -1;
       }
     }
     if (strcmp(argv[loop], "-H") == 0) {
       loop++;
       host = inet_addr(argv[loop]);
-      
+
       if (host==INADDR_NONE) {
         printf("Bad argument for \"-H\"");
         return -2;
