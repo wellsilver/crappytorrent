@@ -12,7 +12,7 @@ endif
 	./main.o
 
 test:
-	gdb --args main.o -p 5
+	g++ main.cpp -g -l "ws2_32" -o main.o
 
 clean:
 	rm main.o

@@ -5,7 +5,7 @@
 
 #include <string.h>
 
-#include <vector>
+#include <list>
 #include <iostream>
 #include <thread>
 
@@ -22,6 +22,8 @@ bool search = false;
 char searchstr[35];
 bool target = false;
 char targethash[512];
+/* variables */
+list<char *> trackers;
 
 // a info packet type1
 struct ackpacket {
@@ -77,8 +79,16 @@ int main(int argc, char **argv) {
       target = true;
       memcpy(targethash,argv[loop],512);
     }
+    if (strcmp(argv[loop], "-t")==0) {
+      loop++;
+      if (argv[loop] == NULL) {
+        printf("Bad argument \"-t\"");
+        return -3;
+      }
+      trackers.assign(1,argv[loop]);
+    }
   }
-  printf("%s-",searchstr);
+
 #ifdef _WIN32
   WSACleanup();
 #endif
