@@ -23,6 +23,8 @@ char searchstr[35];
 bool target = false;
 char targethash[512];
 /* variables */
+int argc;
+char **argv;
 list<char *> trackers;
 
 // a info packet type1
@@ -49,7 +51,19 @@ struct searchpacket {
   char data[1000];
 } __attribute__((__packed__));
 
-int main(int argc, char **argv) {
+void load_trackers() {
+  FILE *f = fopen(argv[0],"r");
+  char str[50];
+
+  for (int loop=0;!feof(f);fgets(str,50,f)) {
+
+  }
+  
+}
+
+int main(int argc_, char **argv_) {
+  argc = argc_;
+  argv = argv_;
 #ifdef _WIN32
   WSADATA wsa;
   if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0) {
@@ -57,9 +71,12 @@ int main(int argc, char **argv) {
     return -1;
   }
 #endif
+
+  load_trackers();
+  
   for (int loop=0;loop<argc;loop++) {
     if (strcmp(argv[loop], "-h")==0 | strcmp(argv[loop], "-help")==0) {
-      printf("\ncrappytorrent 0 client\n-s <name> search for\n-d <hash> download from hash\n-t <protocol://address:port> add a tracker\n\n");
+      printf("\ncrappytorrent 0 client\n-s <name> search for\n-d <hash> download from hash\n-test test trackers\n-t <protocol://address:port> add a tracker\n\n");
     }
     if (strcmp(argv[loop], "-s")==0) {
       loop++;
@@ -86,6 +103,9 @@ int main(int argc, char **argv) {
         return -3;
       }
       trackers.assign(1,argv[loop]);
+    }
+    if (strcmp(argv[loop], "-test")==0) {
+      
     }
   }
 
