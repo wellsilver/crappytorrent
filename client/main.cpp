@@ -11,7 +11,11 @@
 
 #ifdef __WIN32__
 # include <winsock2.h>
+# define trackerf "%APPDATA%\\ctorrent\\trackers.txt"
+# define appdata "%APPDATA%\\ctorrent"
 #else
+# define trackerf "$home\\ctorrent\\trackers.txt"
+# define appdata "$home\\ctorrent"
 # include <arpa/inet.h>
 # include <sys/socket.h>
 #endif
@@ -22,6 +26,7 @@ bool search = false;
 char searchstr[35];
 bool target = false;
 char targethash[512];
+
 /* variables */
 int argc;
 char **argv;
@@ -51,14 +56,22 @@ struct searchpacket {
   char data[1000];
 } __attribute__((__packed__));
 
-void load_trackers() {
-  FILE *f = fopen(argv[0],"r");
-  char str[50];
-
-  for (int loop=0;!feof(f);fgets(str,50,f)) {
-
-  }
+int load_trackers() {
+  FILE *f = fopen(trackerf,"r");
   
+  if (f==NULL) {mkdir(appdata);f = fopen(trackerf,"x");}
+  if (f==NULL) {
+    printf("Cant read or make tracker file at %s\n",trackerf);
+    return -3;
+  }
+  char *str = (char *) malloc(50);
+
+  while (fgets(str,50,f)!=NULL) {
+    puts(str);
+  }
+
+  fclose(f);
+  return 0;
 }
 
 int main(int argc_, char **argv_) {
@@ -72,7 +85,9 @@ int main(int argc_, char **argv_) {
   }
 #endif
 
-  load_trackers();
+  if (load_trackers()!=0) {
+    return -3;
+  }
   
   for (int loop=0;loop<argc;loop++) {
     if (strcmp(argv[loop], "-h")==0 | strcmp(argv[loop], "-help")==0) {
@@ -105,7 +120,7 @@ int main(int argc_, char **argv_) {
       trackers.assign(1,argv[loop]);
     }
     if (strcmp(argv[loop], "-test")==0) {
-      
+      ;//...
     }
   }
 
