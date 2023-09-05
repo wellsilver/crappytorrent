@@ -3,7 +3,7 @@
 
 #include <unistd.h>
 
-#include <string.h>
+#include <string>
 
 #include <list>
 #include <iostream>
@@ -11,13 +11,10 @@
 
 #ifdef __WIN32__
 # include <winsock2.h>
-# define trackerf "%APPDATA%\\ctorrent\\trackers.txt"
-# define appdata "%APPDATA%\\ctorrent"
 #else
-# define trackerf "$home\\ctorrent\\trackers.txt"
-# define appdata "$home\\ctorrent"
 # include <arpa/inet.h>
 # include <sys/socket.h>
+# include <cstring>
 #endif
 using namespace std;
 
@@ -28,6 +25,7 @@ bool target = false;
 char targethash[512];
 
 /* variables */
+string dir;
 int argc;
 char **argv;
 list<char *> trackers;
@@ -57,11 +55,12 @@ struct searchpacket {
 } __attribute__((__packed__));
 
 int load_trackers() {
-  FILE *f = fopen(trackerf,"r");
-  
-  if (f==NULL) {mkdir(appdata);f = fopen(trackerf,"x");}
+  FILE *f = fopen((dir+"\\trackerlist.txt").c_str(),"r");
+
+  // TODO: mkdir does not work on linux
+  if (f==NULL) {mkdir(dir.c_str());f = fopen((dir+"\\trackerlist.txt").c_str(),"w");}
   if (f==NULL) {
-    printf("Cant read or make tracker file at %s\n",trackerf);
+    printf("Cant read or make tracker list file at %s\n",(dir+"\\trackerlist.txt").c_str());
     return -3;
   }
   char *str = (char *) malloc(50);
@@ -77,13 +76,21 @@ int load_trackers() {
 int main(int argc_, char **argv_) {
   argc = argc_;
   argv = argv_;
+  char *v;
 #ifdef _WIN32
   WSADATA wsa;
   if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0) {
     printf("Failed to initialize Winsock\n");
     return -1;
   }
+  v = getenv("appdata");
+#else
+  v = getenv("home");
 #endif
+  string directory = "\\ctrnt";
+  dir = string(v);
+
+  dir.append(directory);
 
   if (load_trackers()!=0) {
     return -3;
