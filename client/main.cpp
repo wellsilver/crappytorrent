@@ -65,8 +65,8 @@ int load_trackers() {
   }
   char *str = (char *) malloc(50);
 
-  while (fgets(str,50,f)!=NULL) {
-    puts(str);
+  while (!feof(f)) {
+    puts(fgets(str,50,f));
   }
 
   fclose(f);
@@ -87,6 +87,7 @@ int main(int argc_, char **argv_) {
 #else
   v = getenv("home");
 #endif
+  // TODO: there is a cleaner way to make the dir str
   string directory = "\\ctrnt";
   dir = string(v);
 
