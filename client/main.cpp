@@ -28,7 +28,7 @@ char targethash[512];
 string dir;
 int argc;
 char **argv;
-list<char *> trackers;
+list<string> trackers;
 
 // a info packet type1
 struct ackpacket {
@@ -58,7 +58,7 @@ int load_trackers() {
   FILE *f = fopen((dir+"\\trackerlist.txt").c_str(),"r");
 
   // TODO: mkdir does not work on linux
-  if (f==NULL) {mkdir(dir.c_str());f = fopen((dir+"\\trackerlist.txt").c_str(),"w");}
+  if (f==NULL) {mkdir(dir.c_str());f = fopen((dir+"\\trackerlist.txt").c_str(),"w");fclose(f);f = fopen((dir+"\\trackerlist.txt").c_str(),"r");}
   if (f==NULL) {
     printf("Cant read or make tracker list file at %s\n",(dir+"\\trackerlist.txt").c_str());
     return -3;
@@ -66,7 +66,7 @@ int load_trackers() {
   char *str = (char *) malloc(50);
 
   while (!feof(f)) {
-    puts(fgets(str,50,f));
+    trackers.push_front(string(fgets(str,50,f)));
   }
 
   fclose(f);
