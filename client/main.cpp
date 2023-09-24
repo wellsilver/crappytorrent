@@ -87,7 +87,6 @@ int main(int argc_, char **argv_) {
 #else
   v = getenv("home");
 #endif
-  // TODO: there is a cleaner way to make the dir str
   string directory = "\\ctrnt";
   dir = string(v);
 
