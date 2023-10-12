@@ -98,7 +98,7 @@ int main(int argc_, char **argv_) {
   
   for (int loop=0;loop<argc;loop++) {
     if (strcmp(argv[loop], "-h")==0 | strcmp(argv[loop], "-help")==0) {
-      printf("\ncrappytorrent 0 client\n-s <name> search for\n-d <hash> download from hash\n-test test trackers\n-t <protocol://address:port> add a tracker\n\n");
+      printf("\ncrappytorrent 0 client\n-s <name> search for\n-d <hash> download from hash\n-test test trackers\n-t <protocol://address:port> add a tracker\n-serve start as tracker\n\n");
     }
     if (strcmp(argv[loop], "-s")==0) {
       loop++;
