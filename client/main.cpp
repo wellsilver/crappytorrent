@@ -33,7 +33,6 @@ list<string> trackers;
 // a info packet type1
 struct ackpacket {
   char type;
-  int64_t ip;
 
   char data[1000];
 } __attribute__((__packed__));
@@ -41,7 +40,6 @@ struct ackpacket {
 // a download packet type2
 struct downpacket {
   char type;
-  int64_t ip;
 
   char data[1000];
 } __attribute__((__packed__));
@@ -49,7 +47,6 @@ struct downpacket {
 // a search packet type3
 struct searchpacket {
   char type;
-  int64_t ip;
 
   char data[1000];
 } __attribute__((__packed__));
