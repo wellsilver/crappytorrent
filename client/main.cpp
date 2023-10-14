@@ -30,27 +30,6 @@ int argc;
 char **argv;
 list<string> trackers;
 
-// a info packet type1
-struct ackpacket {
-  char type;
-
-  char data[1000];
-} __attribute__((__packed__));
-
-// a download packet type2
-struct downpacket {
-  char type;
-
-  char data[1000];
-} __attribute__((__packed__));
-
-// a search packet type3
-struct searchpacket {
-  char type;
-
-  char data[1000];
-} __attribute__((__packed__));
-
 int load_trackers() {
   FILE *f = fopen((dir+"\\trackerlist.txt").c_str(),"r");
 
