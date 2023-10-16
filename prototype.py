@@ -11,6 +11,11 @@
 from socket import *
 import sys
 
+try:
+  f = open("trackers.txt", "r")
+except FileNotFoundError:
+  f = open("trackers.txt", "w")
+
 def server():
   s = socket(AF_INET6, SOCK_DGRAM)
   s.bind(("0:0:0:0:0:0:0:1", 4078))
